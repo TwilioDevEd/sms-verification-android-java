@@ -17,11 +17,14 @@ apply plugin: 'war'
 apply plugin: "groovy"
 apply plugin: 'org.springframework.boot'
 
+ext['logbackVersion'] = '1.1.11'
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web:1.5.3.RELEASE")
     compile group: 'com.twilio.sdk', name: 'twilio', version:'7.8.0'
-    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.2'
+    compile("ch.qos.logback:logback-access:${logbackVersion}")
+    compile("ch.qos.logback:logback-classic:${logbackVersion}")
+    compile('net.rakugakibox.springbootext:spring-boot-ext-logback-access:1.6')
     compile "org.codehaus.groovy:groovy-all:2.4.1"
 
     testCompile "org.spockframework:spock-core:1.1-groovy-2.4"
