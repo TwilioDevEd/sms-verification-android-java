@@ -1,8 +1,9 @@
-package com.twilio.androidsms.controllers.models;
+package com.twilio.androidsms.models;
 
 import java.util.Map;
 
-public class ConfigResponse {
+public class ConfigurationModel {
+    
 
     private String twilioAccountSid;
     private String twilioApiKey;
@@ -10,7 +11,7 @@ public class ConfigResponse {
     private String appHash;
     private String clientSecret;
 
-    public ConfigResponse() {
+    public ConfigurationModel() {
         Map<String, String> env = System.getenv();
         this.twilioAccountSid = env.get("TWILIO_ACCOUNT_SID");
         this.twilioApiKey = env.get("TWILIO_API_KEY");
@@ -18,6 +19,8 @@ public class ConfigResponse {
         this.appHash = env.get("APP_HASH");
         this.clientSecret = env.get("CLIENT_SECRET");
     }
+
+
 
     public String getTwilioAccountSid() {
         return twilioAccountSid;
