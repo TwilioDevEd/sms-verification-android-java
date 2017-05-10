@@ -27,8 +27,7 @@ dependencies {
     compile('net.rakugakibox.springbootext:spring-boot-ext-logback-access:1.6')
     compile "org.codehaus.groovy:groovy-all:2.4.1"
     compile group: 'com.google.guava', name: 'guava', version: '21.0'
-
-
+    compile group: 'org.ehcache', name: 'ehcache', version: '3.3.1'
 
     testCompile("org.springframework.boot:spring-boot-starter-test:${springBoot}")
     testCompile 'com.github.stefanbirkner:system-rules:1.16.0'
