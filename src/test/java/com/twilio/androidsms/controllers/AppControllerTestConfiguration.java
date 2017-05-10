@@ -1,6 +1,7 @@
 package com.twilio.androidsms.controllers;
 
 import com.twilio.androidsms.services.SmsVerificationService;
+import com.twilio.androidsms.services.TwilioClient;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,5 +16,11 @@ public class AppControllerTestConfiguration {
     @Primary
     public SmsVerificationService smsVerificationService() {
         return Mockito.mock(SmsVerificationService.class);
+    }
+
+    @Bean
+    @Primary
+    public TwilioClient twilioClient() {
+        return Mockito.mock(TwilioClient.class);
     }
 }
