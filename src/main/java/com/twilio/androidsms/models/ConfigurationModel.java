@@ -1,5 +1,7 @@
 package com.twilio.androidsms.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Map;
 
 public class ConfigurationModel {
@@ -25,26 +27,27 @@ public class ConfigurationModel {
         this.appHash = appHash;
     }
 
+    @JsonProperty("TWILIO_API_SECRET")
     public String getTwilioApiSecret() {
         return twilioApiSecret;
     }
-
+    @JsonProperty("TWILIO_ACCOUNT_SID")
     public String getTwilioAccountSid() {
         return twilioAccountSid;
     }
-
+    @JsonProperty("TWILIO_API_KEY")
     public String getTwilioApiKey() {
         return twilioApiKey;
     }
-
+    @JsonProperty("SENDING_PHONE_NUMBER")
     public String getSendingPhoneNumber() {
         return sendingPhoneNumber;
     }
-
+    @JsonProperty("APP_HASH")
     public String getAppHash() {
         return appHash;
     }
-
+    @JsonProperty("CLIENT_SECRET")
     public String getClientSecret() {
         return clientSecret;
     }
