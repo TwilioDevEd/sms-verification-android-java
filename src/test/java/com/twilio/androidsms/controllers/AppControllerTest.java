@@ -2,16 +2,13 @@ package com.twilio.androidsms.controllers;
 
 import com.twilio.androidsms.App;
 import com.twilio.androidsms.services.SmsVerificationService;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.mockito.verification.VerificationMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -20,12 +17,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @ActiveProfiles("test")
@@ -58,6 +53,7 @@ public class AppControllerTest {
     @Before
     public void setup() {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
+        Mockito.reset(smsVerificationService);
     }
 
     @Test
@@ -89,9 +85,6 @@ public class AppControllerTest {
 
     @Test
     public void sendVerificationSmsAndReturnsSuccessJson() throws Exception {
-        when(smsVerificationService.sendVerificationSms("phone"))
-                .thenReturn(true);
-
         mockMvc.perform(post("/api/request")
                 .param("client_secret", "clientSecret")
                 .param("phone", "phone"))
@@ -200,15 +193,34 @@ public class AppControllerTest {
     }
 
     @Test
-    public void resetReturnsSuccessMessageAndResetsCodeInCache() throws Exception {
+    public void resetReturnsSuccessMessageWhenPhoneResetsSucceeds() throws Exception {
+        when(smsVerificationService.resetCode("phone")).thenReturn(true);
+
         mockMvc.perform(post("/api/reset")
                 .param("client_secret", "clientSecret")
                 .param("phone", "phone"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)))
-                .andExpect(jsonPath("$.time", is(900)));
+                .andExpect(jsonPath("$.phone", is("phone")));
 
-        Mockito.verify(smsVerificationService, Mockito.times(1)).reset("phone");
+        Mockito.verify(smsVerificationService, Mockito.times(1))
+                .resetCode("phone");
+    }
+
+    @Test
+    public void resetReturnsUnsuccessfulMessageWhenResetFails() throws Exception {
+        when(smsVerificationService.resetCode("phone")).thenReturn(false);
+
+        mockMvc.perform(post("/api/reset")
+                .param("client_secret", "clientSecret")
+                .param("phone", "phone"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(false)))
+                .andExpect(jsonPath("$.msg",
+                        is("Unable to reset code for this phone number")));
+
+        Mockito.verify(smsVerificationService, Mockito.times(1))
+                .resetCode("phone");
     }
 }
 

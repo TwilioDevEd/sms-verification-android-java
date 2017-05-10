@@ -20,6 +20,9 @@ public class ConfigurationModel {
         this.clientSecret = env.get("CLIENT_SECRET");
     }
 
+    public ConfigurationModel(String appHash) {
+        this.appHash = appHash;
+    }
 
 
     public String getTwilioAccountSid() {

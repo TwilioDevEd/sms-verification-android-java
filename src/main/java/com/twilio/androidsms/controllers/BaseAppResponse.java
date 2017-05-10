@@ -1,4 +1,4 @@
-package com.twilio.androidsms.controllers.models;
+package com.twilio.androidsms.controllers;
 
 public class BaseAppResponse {
     private boolean success;

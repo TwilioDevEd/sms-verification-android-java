@@ -1,6 +1,5 @@
 package com.twilio.androidsms.controllers;
 
-import com.twilio.androidsms.controllers.models.BaseAppResponse;
 import com.twilio.androidsms.exceptions.ControllerException;
 import com.twilio.androidsms.exceptions.MissingParametersException;
 import com.twilio.androidsms.services.ConfigurationService;
@@ -61,9 +60,10 @@ public class AppController {
         checkClientSecretAndPhoneArePresent(clientSecret, phone);
         checkClientSecretsMatch(clientSecret);
 
-        smsVerificationService.reset(phone);
+        boolean result = smsVerificationService.resetCode(phone);
+        String message = !result ? "Unable to reset code for this phone number" : null;
 
-        return new BaseAppResponse(true, SmsVerificationService.expirationSeconds);
+        return new BaseAppResponse(result, phone, message);
     }
 
     private void checkClientSecretAndPhoneArePresent(@RequestParam(value = "client_secret", required = false) String clientSecret, @RequestParam(value = "phone", required = false) String phone) {
