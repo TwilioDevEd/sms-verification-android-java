@@ -26,8 +26,6 @@ public class TwilioClient {
     public String sendMessage(String phone, String message){
         PhoneNumber from = new PhoneNumber(configurationService.getConfiguration().getSendingPhoneNumber());
         PhoneNumber to = new PhoneNumber(phone);
-        return Message.creator(to, from, message)
-                .create()
-                .getSid();
+        return Message.creator(to, from, message).create().getSid();
     }
 }

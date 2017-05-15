@@ -2,12 +2,10 @@ package com.twilio.androidsms.controllers;
 
 import com.twilio.androidsms.controllers.requests.BaseApiRequest;
 import com.twilio.androidsms.controllers.requests.VerifyCodeRequest;
-import com.twilio.androidsms.exceptions.ControllerException;
+import com.twilio.androidsms.exceptions.ClientSecretsMismatch;
 import com.twilio.androidsms.exceptions.MissingParametersException;
 import com.twilio.androidsms.services.ConfigurationService;
 import com.twilio.androidsms.services.SmsVerificationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,7 +65,7 @@ public class ApiController {
 
     private void checkClientSecretsMatch(BaseApiRequest request) {
         if(!request.getClientSecret().equals(configurationService.getConfiguration().getClientSecret())) {
-            throw new ControllerException("The client_secret parameter does not match.");
+            throw new ClientSecretsMismatch("The client_secret parameter does not match.");
         }
     }
 }

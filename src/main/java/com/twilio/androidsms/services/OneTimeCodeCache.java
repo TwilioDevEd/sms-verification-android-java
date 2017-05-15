@@ -2,7 +2,6 @@ package com.twilio.androidsms.services;
 
 import org.ehcache.Cache;
 import org.ehcache.CacheManager;
-import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.expiry.Duration;
 import org.springframework.stereotype.Service;
 

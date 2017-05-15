@@ -87,13 +87,13 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void sendVerificationSmsReturn500WhenClientSecretsDontMatch() throws Exception {
+    public void sendVerificationSmsReturn400WhenClientSecretsDontMatch() throws Exception {
         BaseApiRequest request = new BaseApiRequest("invalid", "phone");
 
         mockMvc.perform(post("/api/request")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(convertObjectToJsonBytes(request)))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().string("The client_secret parameter does not match."));
     }
 
@@ -149,13 +149,13 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void verifyCodeReturn500WhenClientSecretsDontMatch() throws Exception {
+    public void verifyCodeReturn400WhenClientSecretsDontMatch() throws Exception {
         VerifyCodeRequest request = new VerifyCodeRequest("invalid", "phone", "smsMessage");
 
         mockMvc.perform(post("/api/verify")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(convertObjectToJsonBytes(request)))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().string("The client_secret parameter does not match."));
     }
 
@@ -215,13 +215,13 @@ public class ApiControllerTest {
     }
 
     @Test
-    public void resetReturn500WhenClientSecretsDontMatch() throws Exception {
+    public void resetReturn400WhenClientSecretsDontMatch() throws Exception {
         BaseApiRequest request = new BaseApiRequest("invalid", "phone");
 
         mockMvc.perform(post("/api/reset")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(convertObjectToJsonBytes(request)))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().string("The client_secret parameter does not match."));
     }
 
