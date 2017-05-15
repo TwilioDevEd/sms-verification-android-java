@@ -1,6 +1,10 @@
 package com.twilio.androidsms.controllers;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.androidsms.App;
+import com.twilio.androidsms.controllers.requests.BaseApiRequest;
+import com.twilio.androidsms.controllers.requests.VerifyCodeRequest;
 import com.twilio.androidsms.services.SmsVerificationService;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -11,11 +15,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.io.IOException;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
@@ -27,7 +34,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = App.class)
 @WebAppConfiguration
-public class AppControllerTest {
+public class ApiControllerTest {
 
     @ClassRule
     public static final EnvironmentVariables environmentVariables
@@ -58,8 +65,10 @@ public class AppControllerTest {
 
     @Test
     public void sendVerificationSmsReturns400WhenClientSecretParameterIsAbsent() throws Exception {
+        BaseApiRequest request = new BaseApiRequest(null, "phone");
         mockMvc.perform(post("/api/request")
-                .param("phone", "phone"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(convertObjectToJsonBytes(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(
                         "The client_secret and phone parameters are required"));
@@ -67,8 +76,11 @@ public class AppControllerTest {
 
     @Test
     public void sendVerificationSmsReturns400WhenPhoneParameterIsAbsent() throws Exception {
+        BaseApiRequest request = new BaseApiRequest("clientSecret", null);
+
         mockMvc.perform(post("/api/request")
-                .param("client_secret", "clientSecret"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(convertObjectToJsonBytes(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(
                         "The client_secret and phone parameters are required"));
@@ -76,18 +88,22 @@ public class AppControllerTest {
 
     @Test
     public void sendVerificationSmsReturn500WhenClientSecretsDontMatch() throws Exception {
+        BaseApiRequest request = new BaseApiRequest("invalid", "phone");
+
         mockMvc.perform(post("/api/request")
-                .param("client_secret", "invalid")
-                .param("phone", "phone"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(convertObjectToJsonBytes(request)))
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().string("The client_secret parameter does not match."));
     }
 
     @Test
     public void sendVerificationSmsAndReturnsSuccessJson() throws Exception {
+        BaseApiRequest request = new BaseApiRequest("clientSecret", "phone");
+
         mockMvc.perform(post("/api/request")
-                .param("client_secret", "clientSecret")
-                .param("phone", "phone"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(convertObjectToJsonBytes(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)))
                 .andExpect(jsonPath("$.time", is(900)));
@@ -98,9 +114,11 @@ public class AppControllerTest {
 
     @Test
     public void verifyCodeReturns400WhenClientSecretParameterIsAbsent() throws Exception {
+        VerifyCodeRequest request = new VerifyCodeRequest(null, "phone", "smsMessage");
+
         mockMvc.perform(post("/api/verify")
-                .param("sms_message", "smsMessage")
-                .param("phone", "phone"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(convertObjectToJsonBytes(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(
                         "The client_secret, phone, and sms_message parameters are required"));
@@ -108,9 +126,11 @@ public class AppControllerTest {
 
     @Test
     public void verifyCodeReturns400WhenSmsMessageParameterIsAbsent() throws Exception {
+        VerifyCodeRequest request = new VerifyCodeRequest("clientSecret", "phone", null);
+
         mockMvc.perform(post("/api/verify")
-                .param("client_secret", "clientSecret")
-                .param("phone", "phone"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(convertObjectToJsonBytes(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(
                         "The client_secret, phone, and sms_message parameters are required"));
@@ -118,9 +138,11 @@ public class AppControllerTest {
 
     @Test
     public void verifyCodeReturns400WhenPhoneParameterIsAbsent() throws Exception {
+        VerifyCodeRequest request = new VerifyCodeRequest("clientSecret", null, "smsMessage");
+
         mockMvc.perform(post("/api/verify")
-                .param("client_secret", "clientSecret")
-                .param("sms_message", "smsMessage"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(convertObjectToJsonBytes(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(
                         "The client_secret, phone, and sms_message parameters are required"));
@@ -128,10 +150,11 @@ public class AppControllerTest {
 
     @Test
     public void verifyCodeReturn500WhenClientSecretsDontMatch() throws Exception {
+        VerifyCodeRequest request = new VerifyCodeRequest("invalid", "phone", "smsMessage");
+
         mockMvc.perform(post("/api/verify")
-                .param("client_secret", "invalid")
-                .param("phone", "phone")
-                .param("sms_message", "smsMessage"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(convertObjectToJsonBytes(request)))
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().string("The client_secret parameter does not match."));
     }
@@ -141,10 +164,11 @@ public class AppControllerTest {
         when(smsVerificationService.verifyCode("phone", "smsMessage"))
                 .thenReturn(true);
 
+        VerifyCodeRequest request = new VerifyCodeRequest("clientSecret", "phone", "smsMessage");
+
         mockMvc.perform(post("/api/verify")
-                .param("client_secret", "clientSecret")
-                .param("phone", "phone")
-                .param("sms_message", "smsMessage"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(convertObjectToJsonBytes(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)))
                 .andExpect(jsonPath("$.phone", is("phone")));
@@ -155,10 +179,11 @@ public class AppControllerTest {
         when(smsVerificationService.verifyCode("phone", "smsMessage"))
                 .thenReturn(false);
 
+        VerifyCodeRequest request = new VerifyCodeRequest("clientSecret", "phone", "smsMessage");
+
         mockMvc.perform(post("/api/verify")
-                .param("client_secret", "clientSecret")
-                .param("phone", "phone")
-                .param("sms_message", "smsMessage"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(convertObjectToJsonBytes(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(false)))
                 .andExpect(jsonPath("$.msg", is(
@@ -167,8 +192,11 @@ public class AppControllerTest {
 
     @Test
     public void resetReturns400WhenClientSecretParameterIsAbsent() throws Exception {
+        BaseApiRequest request = new BaseApiRequest(null, "phone");
+
         mockMvc.perform(post("/api/reset")
-                .param("phone", "phone"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(convertObjectToJsonBytes(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(
                         "The client_secret and phone parameters are required"));
@@ -176,8 +204,11 @@ public class AppControllerTest {
 
     @Test
     public void resetReturns400WhenPhoneParameterIsAbsent() throws Exception {
+        BaseApiRequest request = new BaseApiRequest("clientSecret", null);
+
         mockMvc.perform(post("/api/reset")
-                .param("client_secret", "clientSecret"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(convertObjectToJsonBytes(request)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(
                         "The client_secret and phone parameters are required"));
@@ -185,9 +216,11 @@ public class AppControllerTest {
 
     @Test
     public void resetReturn500WhenClientSecretsDontMatch() throws Exception {
+        BaseApiRequest request = new BaseApiRequest("invalid", "phone");
+
         mockMvc.perform(post("/api/reset")
-                .param("client_secret", "invalid")
-                .param("phone", "phone"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(convertObjectToJsonBytes(request)))
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().string("The client_secret parameter does not match."));
     }
@@ -196,9 +229,11 @@ public class AppControllerTest {
     public void resetReturnsSuccessMessageWhenPhoneResetsSucceeds() throws Exception {
         when(smsVerificationService.resetCode("phone")).thenReturn(true);
 
+        BaseApiRequest request = new BaseApiRequest("clientSecret", "phone");
+
         mockMvc.perform(post("/api/reset")
-                .param("client_secret", "clientSecret")
-                .param("phone", "phone"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(convertObjectToJsonBytes(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)))
                 .andExpect(jsonPath("$.phone", is("phone")));
@@ -211,9 +246,11 @@ public class AppControllerTest {
     public void resetReturnsUnsuccessfulMessageWhenResetFails() throws Exception {
         when(smsVerificationService.resetCode("phone")).thenReturn(false);
 
+        BaseApiRequest request = new BaseApiRequest("clientSecret", "phone");
+
         mockMvc.perform(post("/api/reset")
-                .param("client_secret", "clientSecret")
-                .param("phone", "phone"))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(convertObjectToJsonBytes(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(false)))
                 .andExpect(jsonPath("$.msg",
@@ -221,6 +258,12 @@ public class AppControllerTest {
 
         Mockito.verify(smsVerificationService, Mockito.times(1))
                 .resetCode("phone");
+    }
+
+    public static byte[] convertObjectToJsonBytes(Object object) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        return mapper.writeValueAsBytes(object);
     }
 }
 

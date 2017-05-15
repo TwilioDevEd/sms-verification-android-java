@@ -28,6 +28,8 @@ dependencies {
     compile "org.codehaus.groovy:groovy-all:2.4.1"
     compile group: 'com.google.guava', name: 'guava', version: '21.0'
     compile group: 'org.ehcache', name: 'ehcache', version: '3.3.1'
+    compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.13'
+    compile 'org.codehaus.jackson:jackson-core-asl:1.9.13'
 
     testCompile("org.springframework.boot:spring-boot-starter-test:${springBoot}")
     testCompile 'com.github.stefanbirkner:system-rules:1.16.0'
