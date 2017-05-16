@@ -1,5 +1,8 @@
-package com.twilio.androidsms.controllers;
+package com.twilio.androidsms.controllers.models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BaseAppResponse {
     private boolean success;
     private String phone;

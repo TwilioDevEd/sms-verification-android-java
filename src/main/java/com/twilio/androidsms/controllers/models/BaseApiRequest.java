@@ -1,8 +1,7 @@
-package com.twilio.androidsms.controllers.requests;
+package com.twilio.androidsms.controllers.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import static org.springframework.util.StringUtils.isEmpty;
-
 
 public class BaseApiRequest {
     private String clientSecret;

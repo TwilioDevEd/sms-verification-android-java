@@ -1,7 +1,8 @@
 package com.twilio.androidsms.controllers;
 
-import com.twilio.androidsms.controllers.requests.BaseApiRequest;
-import com.twilio.androidsms.controllers.requests.VerifyCodeRequest;
+import com.twilio.androidsms.controllers.models.BaseApiRequest;
+import com.twilio.androidsms.controllers.models.BaseAppResponse;
+import com.twilio.androidsms.controllers.models.VerifyCodeRequest;
 import com.twilio.androidsms.exceptions.ClientSecretsMismatch;
 import com.twilio.androidsms.exceptions.MissingParametersException;
 import com.twilio.androidsms.services.ConfigurationService;
@@ -31,7 +32,6 @@ public class ApiController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/api/verify")
     public BaseAppResponse verifyCode(@RequestBody VerifyCodeRequest request) {
-
         if(request.isNotValid()) {
             throw new MissingParametersException(
                     "The client_secret, phone, and sms_message parameters are required");

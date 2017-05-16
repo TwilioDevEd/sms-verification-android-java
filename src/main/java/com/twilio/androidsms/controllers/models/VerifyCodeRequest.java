@@ -1,4 +1,6 @@
-package com.twilio.androidsms.controllers.requests;
+package com.twilio.androidsms.controllers.models;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import static org.springframework.util.StringUtils.isEmpty;
 
@@ -14,6 +16,7 @@ public class VerifyCodeRequest extends BaseApiRequest{
         this.smsMessage = smsMessage;
     }
 
+    @JsonProperty("sms_message")
     public String getSmsMessage() {
         return smsMessage;
     }

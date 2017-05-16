@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Profile;
 
 @Profile("test")
 @Configuration
-public class AppControllerTestConfiguration {
+public class ApiControllerTestConfiguration {
 
     @Bean
     @Primary
