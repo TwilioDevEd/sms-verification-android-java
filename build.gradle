@@ -25,7 +25,7 @@ dependencies {
     compile("ch.qos.logback:logback-access:${logbackVersion}")
     compile("ch.qos.logback:logback-classic:${logbackVersion}")
     compile('net.rakugakibox.springbootext:spring-boot-ext-logback-access:1.6')
-    compile "org.codehaus.groovy:groovy-all:2.4.1"
+    compile "org.codehaus.groovy:groovy-all:3.0.4"
     compile group: 'com.google.guava', name: 'guava', version: '21.0'
     compile group: 'org.ehcache', name: 'ehcache', version: '3.3.1'
     compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.13'
