@@ -35,5 +35,5 @@ dependencies {
     testCompile 'com.github.stefanbirkner:system-rules:1.16.0'
     testCompile "org.hamcrest:hamcrest-all:1.3"
     testRuntime "cglib:cglib-nodep:3.2.4"
-    testRuntime "org.objenesis:objenesis:2.5.1"
+    testRuntime "org.objenesis:objenesis:3.2"
 }
