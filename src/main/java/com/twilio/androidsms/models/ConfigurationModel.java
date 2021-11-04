@@ -15,7 +15,7 @@ public class ConfigurationModel {
     private String clientSecret;
 
     public ConfigurationModel() {
-        Dotenv env = Dotenv.configure().load();
+        Dotenv env = Dotenv.configure().ignoreIfMissing().load();
         this.twilioAccountSid = env.get("TWILIO_ACCOUNT_SID");
         this.twilioApiKey = env.get("TWILIO_API_KEY");
         this.twilioApiSecret = env.get("TWILIO_API_SECRET");
