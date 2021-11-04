@@ -33,13 +33,6 @@ Open `.env` in your favorite text editor and configure the following values. You
 `APP_HASH` | Matches the Android application to the SMS message - get this from the Settings menu item in the Android application.
 `CLIENT_SECRET` | Matches the Android application to the server - you can set this in the `strings.xml` file in your Android application. It must match the server's config value. You can also override it in the Settings menu of the app.
 
-
-Once you `.env` file is properly configured, load these variable into your environment like so:
-
-```bash
-source .env
-```
-
 #### A Note on API Keys
 
 When you generate an API key pair at the URLs above, your API Secret will only be shown once -
