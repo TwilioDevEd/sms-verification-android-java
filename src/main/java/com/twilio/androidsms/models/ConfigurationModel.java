@@ -3,6 +3,7 @@ package com.twilio.androidsms.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
+import io.github.cdimascio.dotenv.Dotenv;
 
 public class ConfigurationModel {
 
@@ -14,7 +15,7 @@ public class ConfigurationModel {
     private String clientSecret;
 
     public ConfigurationModel() {
-        Map<String, String> env = System.getenv();
+        Dotenv env = Dotenv.configure().ignoreIfMissing().load();
         this.twilioAccountSid = env.get("TWILIO_ACCOUNT_SID");
         this.twilioApiKey = env.get("TWILIO_API_KEY");
         this.twilioApiSecret = env.get("TWILIO_API_SECRET");
