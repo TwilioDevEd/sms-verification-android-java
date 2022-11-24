@@ -31,7 +31,7 @@ dependencies {
     compile group: 'org.ehcache', name: 'ehcache', version: '3.3.1'
     compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.13'
     compile 'org.codehaus.jackson:jackson-core-asl:1.9.13'
-    compile 'io.github.cdimascio:dotenv-java:2.2.0'
+    compile 'io.github.cdimascio:dotenv-java:2.3.1'
     testCompile("org.springframework.boot:spring-boot-starter-test:${springBoot}")
     testCompile 'com.github.stefanbirkner:system-rules:1.16.0'
     testCompile "org.hamcrest:hamcrest-all:1.3"
